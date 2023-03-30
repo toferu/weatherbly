@@ -1,2 +1,0 @@
-# weatherbly
-tech assessment

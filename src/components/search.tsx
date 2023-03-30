@@ -1,24 +1,24 @@
 import React, {useEffect, useState} from "react";
 import axios from 'axios';
 
-// axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
 const Search = () => {
-    const [apiEndpoint, setApiEndpoint] = useState('http://api.openweathermap.org/geo/1.0/direct?q=')
+    const apiEndpoint = ('http://api.openweathermap.org/geo/1.0/direct?q=')
+    
     const [searchField, setSearchField] = useState('')
-    const [cityData, setCityData] = useState([])
-    const [resultArray, setResultArray] = useState([])
+    const [query, setQuery] = useState([])
+    const [selectedCities, setSelectedCities] = useState([])
     const [toggle, setToggle] = useState(false)
 
 
     const newSearch = () => {
         axios.get(apiEndpoint + `${searchField}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
-        .then(response => setCityData(response.data.results))
+        .then(response => setQuery(response.data))
+        setToggle(!toggle)
     }
 
     const handleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
         setSearchField(event.target.value)
-        setToggle(true)
     }
 
     // const fetchData = async () => {
@@ -66,19 +66,21 @@ return (
 
     </section>
     <>
-        {toggle? cityData.map(() => {
+        {toggle? query.map((data) => {
             return(
                 <span>
                     <p onClick={ () => {
-                        setResultArray(resultArray.concat([]))
+                        setSelectedCities(selectedCities.concat([data]))
                         setToggle(false)}}>
-                    
+                        {data['name']}, {data['country']}
                     </p>
                     
                 </span>
             )
         }):null}
     </>
+{console.log(query)}
+{console.log(selectedCities)}
     </>
 )    
 }

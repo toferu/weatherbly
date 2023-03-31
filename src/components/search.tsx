@@ -1,8 +1,25 @@
-import React, {useEffect, useState} from "react";
-import axios from 'axios';
-import Add from "./Add";
+import React from 'react'
+import {WeatherData} from '../api/types'
+type Props = {
+    searchTerm: string,
+    query: string,
+    selectedCity: {},
+    toggle: boolean,
+    city: WeatherData,
+    newSearch: () => void,
+    getForecast: () => void,
+    handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
 
-const Search = () => {
+const Search = ({
+    searchTerm,
+    query,
+    selectedCity,
+    toggle,
+    city,
+    newSearch,
+    getForecast,
+    handleChange}): JSX.Element => {
     
     const [searchField, setSearchField] = useState('')
     const [query, setQuery] = useState([])

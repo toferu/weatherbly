@@ -58,7 +58,7 @@ return (
                     <p onClick={ () => {
                         setSelectedCity(data)
                         setToggle(false)}}>
-                        {data['name']}, {data['country']}
+                        {data['name']}, {data['state']}, {data['country']}
                     </p>
                     
                 </span>

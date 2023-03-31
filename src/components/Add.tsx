@@ -12,14 +12,17 @@ interface SearchProps {
     selectedCity: CityObject
 }
 export default function Add(props:SearchProps) {
-    const [weatherData, setWeatherData] = useState({})
+    const [weatherData, setWeatherData] = useState({
+        'cnt': Number,
+        'list': []
+    })
     let latNum = props.selectedCity.lat
     let latitude = latNum.toFixed(2)
     console.log(latitude)
     let lonNum = props.selectedCity.lon
     let longitude = lonNum.toFixed(2)
     console.log(longitude)
-    const apiWeather = `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&exclude=minutely,alerts&appid=${import.meta.env.VITE_API_KEY}`
+    const apiWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_API_KEY}`
 
     const addCity = useCallback(() => {
         axios.get(apiWeather)
@@ -31,7 +34,7 @@ addCity()}
 }, [])
 return (
 <>
-{console.log(weatherData)} added
+{JSON.stringify(weatherData.list)} added
 </>
 )
 }

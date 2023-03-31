@@ -2,7 +2,7 @@ import React from 'react'
 import {WeatherData} from '../api/types'
 type Props = {
     searchTerm: string,
-    query: string,
+    query: [],
     selectedCity: {},
     toggle: boolean,
     city: WeatherData,
@@ -19,28 +19,9 @@ const Search = ({
     city,
     newSearch,
     getForecast,
-    handleChange}): JSX.Element => {
+    handleChange}: Props): JSX.Element => {
     
-    const [searchField, setSearchField] = useState('')
-    const [query, setQuery] = useState([])
-    const [selectedCity, setSelectedCity] = useState({
-        name:'',
-        lat:0,
-        lon:0})
-    const [toggle, setToggle] = useState(false)
-
-    const apiGeocode = (`http://api.openweathermap.org/geo/1.0/direct?q=${searchField}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
-
-    const newSearch = () => {
-        axios.get(apiGeocode)
-        .then(response => setQuery(response.data))
-        setToggle(!toggle)
-    }
-
-    const handleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
-        setSearchField(event.target.value)
-    }
-
+//This was a snippet I found in my search on how to store things in cache for a more robust and persistent data storage in lieu of using a db for selected cities. I clearly was far and away from ever implementing it.
     // const fetchData = async () => {
     //     const cachedResult = JSON.parse(localStorage.getItem(url))
 
@@ -84,7 +65,7 @@ return (
     </>
 {console.log(query)}
 {console.log(selectedCity)}
-<Add selectedCity={selectedCity}/>
+
     </>
     
 )    

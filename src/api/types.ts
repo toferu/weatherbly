@@ -1,3 +1,10 @@
+export type ReturnObject = {
+    name: string;
+    lat: number;
+    lon: number;
+    state: string;
+    country: string;
+}
 export type WeatherData = {
     weather: {
         id: number;

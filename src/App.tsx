@@ -1,27 +1,36 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import axios from 'axios'
 import './App.css'
 import Search from './components/Search'
 
 
 function App() {
-  // states for toggling display
-  const [chart, setChart] = useState(false)
-  const [table, setTable] = useState(false)
-  
-  // hook for api calls
-  const cityUrl = 'https://openweatherapp.org/api/geo/1.0/direct?q='
-  // const getCityWeather = () => {
-  //   axios.get('https://openweatherapp')
-  // }
+  const [searchTerm, setSearchTerm] = useState('')
+  const [query, setQuery] = useState([])
+  const [selectedCity, setSelectedCity] = useState({
+        name:'',
+        lat:0,
+        lon:0})
+  const [toggle, setToggle] = useState(false)
+
+  const apiGeocode = (`http://api.openweathermap.org/geo/1.0/direct?q=${searchTerm}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
+
+  const newSearch = () => {
+    axios.get(apiGeocode)
+    .then(response => setQuery(response.data))
+    setToggle(!toggle)
+    }
+
+    const handleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value)
+    }
 
   return (
     <div className="App">
       <>
+      <div className='header'>Weatherbly</div>
       < Search />
 
-      <p>hello</p>
       </>
     </div>
   )

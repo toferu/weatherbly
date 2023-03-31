@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useState} from "react"
 import axios from 'axios'
 import Search from "./Search"
+import {WeatherData} from "../api/types"
 
 interface CityObject {
     name: string,
@@ -12,29 +13,43 @@ interface SearchProps {
     selectedCity: CityObject
 }
 export default function Add(props:SearchProps) {
-    const [weatherData, setWeatherData] = useState({
-        'cnt': Number,
-        'list': []
-    })
+    // const [weatherData, setWeatherData] = useState({
+    //     main: {
+    //         temp: 0
+    //     }
+    // })
     let latNum = props.selectedCity.lat
     let latitude = latNum.toFixed(2)
-    console.log(latitude)
+
     let lonNum = props.selectedCity.lon
     let longitude = lonNum.toFixed(2)
-    console.log(longitude)
-    const apiWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_API_KEY}`
+    
+    const apiWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=imperial&appid=${import.meta.env.VITE_API_KEY}`
 
-    const addCity = useCallback(() => {
+    const [city, setCity] = useState<WeatherData | null>(null) 
+
+//     const addCity = useCallback(() => {
+//         axios.get(apiWeather)
+//         .then(response => (response.data))
+//     }, [])
+
+
+    const getForecast = () => {
         axios.get(apiWeather)
-        .then(response => setWeatherData(response.data))
-    }, [])
-useEffect(() => {
+        .then(response => setCity(response.data))
+        // data as WeatherData
+        console.log(city)
+    }
+
+    useEffect(() => {
  if (latNum > 0 || latNum < 0 && lonNum > 0 || lonNum < 0) {   
-addCity()}
+getForecast()}
 }, [])
+
+
 return (
 <>
-{JSON.stringify(weatherData.list)} added
+<p>{city?.main.temp}</p>
 </>
 )
 }

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Search from './components/search'
+import Search from './components/Search'
+
 
 function App() {
   // states for toggling display
@@ -19,6 +20,7 @@ function App() {
     <div className="App">
       <>
       < Search />
+
       <p>hello</p>
       </>
     </div>

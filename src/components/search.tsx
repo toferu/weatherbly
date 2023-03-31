@@ -1,18 +1,21 @@
 import React, {useEffect, useState} from "react";
 import axios from 'axios';
-
+import Add from "./Add";
 
 const Search = () => {
-    const apiEndpoint = ('http://api.openweathermap.org/geo/1.0/direct?q=')
     
     const [searchField, setSearchField] = useState('')
     const [query, setQuery] = useState([])
-    const [selectedCities, setSelectedCities] = useState([])
+    const [selectedCity, setSelectedCity] = useState({
+        name:'',
+        lat:0,
+        lon:0})
     const [toggle, setToggle] = useState(false)
 
+    const apiGeocode = (`http://api.openweathermap.org/geo/1.0/direct?q=${searchField}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
 
     const newSearch = () => {
-        axios.get(apiEndpoint + `${searchField}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
+        axios.get(apiGeocode)
         .then(response => setQuery(response.data))
         setToggle(!toggle)
     }
@@ -34,21 +37,6 @@ const Search = () => {
     //     }
     // };
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const cachedResult = JSON.parse(localStorage.getItem(url))
-
-    //         let result
-    //         if (cachedResult) {
-    //             result = cachedResult
-    //         } else {
-    //             result = await axios(url)
-    //             localStorage.setItem(url, JSON.stringify(result))
-    //         }
-    //     };
-
-    //     fetchData()
-    // }, [url])
 return (
     <>
     <section>
@@ -57,8 +45,6 @@ return (
             type='search'
             placeholder='Search City'
             onChange={handleChange} />
-
-        <br />
         <input 
             type='submit' 
             value='Search'
@@ -70,7 +56,7 @@ return (
             return(
                 <span>
                     <p onClick={ () => {
-                        setSelectedCities(selectedCities.concat([data]))
+                        setSelectedCity(data)
                         setToggle(false)}}>
                         {data['name']}, {data['country']}
                     </p>
@@ -80,8 +66,10 @@ return (
         }):null}
     </>
 {console.log(query)}
-{console.log(selectedCities)}
+{console.log(selectedCity)}
+<Add selectedCity={selectedCity}/>
     </>
+    
 )    
 }
 export default Search

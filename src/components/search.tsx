@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {WeatherData, ReturnObject} from '../api/types'
+import {WeatherData, ReturnObject, ForecastType} from '../api/types'
 import axios from 'axios'
 
 const Search = (): JSX.Element => {
@@ -21,14 +21,15 @@ const Search = (): JSX.Element => {
   //This should all be a hook, but first it needs fixing
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [query, setQuery] = useState<[]>([])
-  const [selectedCity, setSelectedCity] = useState<ReturnObject>()
+  const [selectedCity, setSelectedCity] = useState<ReturnObject | null>()
   const [toggle, setToggle] = useState(false)
-  const [city, setCity] = useState<WeatherData | null>(null) 
+  const [cityData, setCityData] = useState<ForecastType | null>() 
+  const [submitToggle, setSubmitToggle] = useState(true)
 
 
 //API URLS
   const apiGeocode = (`http://api.openweathermap.org/geo/1.0/direct?q=${searchTerm}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
-  const apiWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=imperial&appid=${import.meta.env.VITE_API_KEY}`
+ 
 
   //This searches the geocode api for the lat lon data
 //   const newSearch = () => {
@@ -41,7 +42,7 @@ const Search = (): JSX.Element => {
     let value = event.target.value
     setSearchTerm(value)
     //this is supposed to prevent extra unnecessary api calls but i'm not sure it's actually doing that
-    if (value === '') return
+    // if (value === '') return
 
     axios.get(apiGeocode)
     .then(response => setQuery(response.data))
@@ -50,30 +51,45 @@ const Search = (): JSX.Element => {
 
   const selectionEvent = (data: ReturnObject) => {
     setSelectedCity(data)
+    setQuery([])
     setToggle(false)
   }
 
-  const getForecast = () => {
-   //Using these variables to convert geocode lat lon data for weather api url
-  //I think this is unnecessary and I wrote it when I thought the problem with the api may have been related to the length of the values here?
-  let latitude = selectedCity.lat
-  let longitude = selectedCity.lon
-  axios.get(apiWeather)
-  .then(response => setCity(response.data))
-// data as WeatherData
+  const getForecast = (selectedCity: ReturnObject) => {
+    let latitude = selectedCity.lat
+    let longitude = selectedCity.lon
+    const apiWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=imperial&appid=${import.meta.env.VITE_API_KEY}`
+    
+    axios.get(apiWeather)
+    //this spreading of response in to an object array variable is new to me.
+    .then(response => {
+        const forecastData = {
+        ...response.data.city,
+        list: response.data.list.slice(0,16)
+        }
+        setCityData(forecastData)
+    })
   }
   
-   
+  const onSubmit = () => {
+    if (!selectedCity) return
+
+    getForecast(selectedCity)
+    setSubmitToggle(false)
+  } 
 
   
+//this part can probably be a different component
 
+
+    const today = cityData.list[0]
 
 
 
 
 return (
     <>
-    <section>
+    {!cityData ? <section>
         <input
             name='q'
             type='search'
@@ -82,9 +98,9 @@ return (
         <input 
             type='submit' 
             value='Search'
-            onClick={getForecast}/>
+            onClick={onSubmit}/>
 
-    </section>
+    </section> :<><p>{`${cityData.name}`}</p><p>{`${today.main.temp}`}</p></>}
     <>
         {toggle? query.map((data: ReturnObject) => {
             return(
@@ -99,9 +115,8 @@ return (
         }):null}
     </>
 
-{console.log(query)}
-{console.log(city)}
-
+{/* {console.log(query)} */}
+{console.log(cityData)}
     </>
     
 )    

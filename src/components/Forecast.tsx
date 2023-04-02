@@ -9,13 +9,11 @@ const Forecast = ({data}: Props) => {
     const [dates, setDates] = useState<Date[]>([])
 
     const convertDate = (index: number) => {
-
-    //    for (let i = 0; i < data.list.length; i++) {
             let unix_timestamp = data.list[index].dt
             let date = new Date(unix_timestamp * 1000)
             return date
         } 
-    // }
+
 
 
 useEffect(() => {
@@ -29,7 +27,7 @@ useEffect(() => {
             <h2>{data.name}</h2>
                 {data.list.map((today: any, index: number) => {
                     return (
-                <h3 key={index}>{dates[index]?.toLocaleString()}-{today.main.temp}</h3>
+                <h3 key={index}>{dates[index]?.toLocaleString()}-{today.main.temp}&#176;F</h3>
                 )})}
         </section>
         </>

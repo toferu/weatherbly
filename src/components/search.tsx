@@ -1,7 +1,5 @@
-
 import {ReturnObject} from '../api/types'
-import axios from 'axios'
-
+import QueryMatch from './QueryMatch'
 
 type Props = {
     searchTerm: string
@@ -46,7 +44,7 @@ const Search = ({
             onClick={onSubmit}/>
 
     </section> 
-
+    <QueryMatch query={query} querySelection={querySelection} />
 
     </>
     

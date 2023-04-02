@@ -10,10 +10,10 @@ const QueryMatch = ({ query, querySelection}: componentProps): JSX.Element => (
             {query.map((data: ReturnObject, index: number) => {
                 return(
                         <li key={data.name + '-' + index}>
-                            <button
+                            <span
                             onClick={ () => {querySelection(data)}}>
                             {data.name}, {data.state}, {data.country}
-                            </button>
+                            </span>
                         </li>
                         
                 )

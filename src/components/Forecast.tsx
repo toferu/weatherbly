@@ -5,12 +5,25 @@ type Props = {
 }
 
 const Forecast = ({data}: Props) => {
-    const today = data.list[0]
+    const convertDate = () => {
+        for (let i = 0; i < data.list.length; i++) {
+            let unix_timestamp = data.list[i].dt
+            let date = new Date(unix_timestamp * 1000)
+            console.log(date)
+        } 
+    }
 
     return (
         <>
         <section>
-            <h2>{data.name}{today.main.temp}</h2>
+            {data.list.map((today: any) => {
+                return (
+                    <>
+            <h2>{data.name}{today.dt}{today.main.temp}</h2>
+            <button onClick={convertDate}>date</button>
+            </>
+            )})}
+            
         </section>
         </>
     )

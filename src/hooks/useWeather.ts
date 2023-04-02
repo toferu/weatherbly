@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {WeatherData, ReturnObject, ForecastType} from '../api/types'
+import {ReturnObject, ForecastType} from '../api/types'
 import axios from 'axios'
 
 const useWeather = () => {
@@ -8,7 +8,7 @@ const useWeather = () => {
   const [selectedCity, setSelectedCity] = useState<ReturnObject | null>()
   const [cityData, setCityData] = useState<ForecastType | null>() 
 
-
+//I am wondering if I can use selectedCity as a regular variable instead because I don't really pass it's state and I may be able to use the 'new' operator as a shortcut for storing cities? If it worked, it would require me to restructure some conditionals below and I basically would not need the onSubmit.
 //API URL
   const apiGeocode = (`http://api.openweathermap.org/geo/1.0/direct?q=${searchTerm}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
  
@@ -38,6 +38,8 @@ const useWeather = () => {
         }
         setCityData(forecastData)
     })
+
+    setSelectedCity(null)
   }
 
   const querySelection = (data: ReturnObject) => {
@@ -46,7 +48,7 @@ const useWeather = () => {
    }
 
    const handleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
-    let value = event.target.value
+    let value = event.target.value.trim()
     setSearchTerm(value)
 
     if (value !== '') {

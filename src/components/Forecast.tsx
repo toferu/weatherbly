@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ForecastType } from "../api/types";
 
 type Props = {
@@ -5,25 +6,31 @@ type Props = {
 }
 
 const Forecast = ({data}: Props) => {
-    const convertDate = () => {
-        for (let i = 0; i < data.list.length; i++) {
-            let unix_timestamp = data.list[i].dt
+    const [dates, setDates] = useState<Date[]>([])
+
+    const convertDate = (index: number) => {
+
+    //    for (let i = 0; i < data.list.length; i++) {
+            let unix_timestamp = data.list[index].dt
             let date = new Date(unix_timestamp * 1000)
-            console.log(date)
+            return date
         } 
-    }
+    // }
+
+
+useEffect(() => {
+    const newDates = data.list.map((item: any) => new Date(item.dt * 1000));
+    setDates(newDates);
+}, [data])
 
     return (
         <>
         <section>
-            {data.list.map((today: any) => {
-                return (
-                    <>
-            <h2>{data.name}{today.dt}{today.main.temp}</h2>
-            <button onClick={convertDate}>date</button>
-            </>
-            )})}
-            
+            <h2>{data.name}</h2>
+                {data.list.map((today: any, index: number) => {
+                    return (
+                <h3 key={index}>{dates[index]?.toLocaleString()}-{today.main.temp}</h3>
+                )})}
         </section>
         </>
     )

@@ -61,3 +61,20 @@ export type ForecastType = {
     }]
     }]
 }
+
+export type ChartType = {
+    options: {
+        chart: {
+          id: "basic-bar"
+        },
+        xaxis: {
+          categories: []
+        }
+      },
+      series: [
+        {
+          name: "series-1",
+          data: []
+        }
+      ]
+    }

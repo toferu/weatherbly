@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ForecastType } from "../api/types";
+import ChartComponent from './Chart'
 
 type Props = {
     data: ForecastType
@@ -7,13 +8,6 @@ type Props = {
 
 const Forecast = ({data}: Props) => {
     const [dates, setDates] = useState<Date[]>([])
-
-    const convertDate = (index: number) => {
-            let unix_timestamp = data.list[index].dt
-            let date = new Date(unix_timestamp * 1000)
-            return date
-        } 
-
 
 
 useEffect(() => {
@@ -30,6 +24,7 @@ useEffect(() => {
                 <h3 key={index}>{dates[index]?.toLocaleString()}-{today.main.temp}&#176;F</h3>
                 )})}
         </section>
+        <ChartComponent dates={dates} />
         </>
     )
 }

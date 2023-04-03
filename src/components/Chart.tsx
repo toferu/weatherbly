@@ -1,20 +1,48 @@
 import Forecast from "./Forecast";
 import Chart from 'react-apexcharts'
-import { ChartType } from "../api/types";
+import { ChartType, ForecastType } from "../api/types";
 import {useState} from 'react'
 
 type Props = {
-    dates: []
+    data: ForecastType
+    dates: Date[]
 }
 
-const ChartComponent = ({dates}: Props) => {
+const ChartComponent = ({data, dates}: Props) => {
+    const tempData = data.list.map((item) => item.main.temp)
+    
+    const [chartData, setChartData] = useState({
+            options: {
+                chart: {
+                  id: "basic-line"
+                },
+                xaxis: {
+                  categories: dates.map((date) => date.toLocaleString())
+                }
+              },
+              series: [
+                {
+                  name: "Temperature",
+                  data: tempData
+                }
+              ]
+            }
+    );
 
-const [chartData, setChartData] = useState<ChartType[]>([])
-
-const setAxisX = dates.map((data: any) => {
-    //this aint right
-    setChartData(data.xaxis.categories)
-}
+    return (
+        <div className="app">
+        <div className="row">
+            <div className="mixed-chart">
+            <Chart
+                options={chartData.options}
+                series={chartData.series}
+                type="line"
+                width="500"
+            />
+            </div>
+        </div>
+        </div>
+    )
 
 }
 

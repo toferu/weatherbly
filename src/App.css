@@ -18,3 +18,7 @@ li {
 li:hover {
   background-color: #888;
 }
+
+button {
+  border: .3em solid black;
+}

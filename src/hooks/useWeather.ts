@@ -8,10 +8,11 @@ const useWeather = () => {
   const [selectedCity, setSelectedCity] = useState<ReturnObject | null>()
   const [cityData, setCityData] = useState<ForecastType | null>() 
 
-//I am wondering if I can use selectedCity as a regular variable instead because I don't really pass it's state and I may be able to use the 'new' operator as a shortcut for storing multiple cities? If it worked, it would require me to restructure some conditionals below and I basically would not need the onSubmit.
-//API URL
+  const localStorageSaveData = (key: string, value: any) => {
+    localStorage.setItem(key, JSON.stringify(value))
+  }
+
   const apiGeocode = (`http://api.openweathermap.org/geo/1.0/direct?q=${searchTerm}&limit=5&appid=${import.meta.env.VITE_API_KEY}`)
- 
     
   const getSearchMatches = (term: string) => {
     axios.get(apiGeocode)
@@ -24,22 +25,36 @@ const useWeather = () => {
     getForecast(selectedCity)
    }
 
+   const getLocalData = (key: string) => {
+    const data = localStorage.getItem(key)
+    return data ? JSON.parse(data) : null
+   }
+
   const getForecast = (selectedCity: ReturnObject) => {
+    const localStorageKey = `weatherData-${selectedCity.lat}-${selectedCity.lon}`
+    const cachedData = getLocalData(localStorageKey)
+
+    if (cachedData) {
+        setCityData(cachedData)
+        setSelectedCity(null)
+    } else {
+
     let latitude = selectedCity.lat
     let longitude = selectedCity.lon
     const apiWeather = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=imperial&appid=${import.meta.env.VITE_API_KEY}`
     
-    axios.get(apiWeather)
-    //this spreading of response in to an object array variable is new to me.
-    .then(response => {
+    axios
+    .get(apiWeather)
+    .then((response) => {
         const forecastData = {
         ...response.data.city,
-        list: response.data.list.slice(0,16)
+        list: response.data.list.slice(0,30)
         }
         setCityData(forecastData)
+        localStorageSaveData(localStorageKey, forecastData)
     })
-
-    setSelectedCity(null)
+    .finally(() => setSelectedCity(null))
+   }
   }
 
   const querySelection = (data: ReturnObject) => {
@@ -57,11 +72,32 @@ const useWeather = () => {
    }
 
    useEffect(() => {
-    if(selectedCity) {
-        setSearchTerm(selectedCity.name)
-        setQuery([])
+    const localKeys = Object.keys(localStorage).filter((key) => key.startsWith('weatherData-'
+    ))
+    const cachedData = localKeys.map((key) =>
+    JSON.parse(localStorage.getItem(key))
+    )
+
+    if (cachedData.length > 0) {
+        setCityData(cachedData[0])
+    } else {
+        setCityData(null)
     }
-   }, [selectedCity])
+
+    const cachedCityData = {}
+    cachedData.forEach((data) => {
+        cachedCityData[data.city.id] = data
+    })
+
+    localStorage.setItem('cachedCityData', JSON.stringify(cachedCityData))
+
+   }, [])
+//    useEffect(() => {
+//     if(selectedCity) {
+//         setSearchTerm(selectedCity.name)
+//         setQuery([])
+//     }
+//    }, [selectedCity])
 
   return {
     cityData,

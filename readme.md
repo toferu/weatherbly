@@ -10,6 +10,8 @@ I decided to build my react app with Vite as I've only ever used CRA. I began by
 
 You can't really tell from this image, but the 'Current Temperature' and 'Forecast' blocks are intended to be more of a Guassian blur effect over the background than a different color. The background would have more details: a cloud motif and a gradient effect, preferably animated.
 
+The "Current Temperature" section would be toggleable to show chart data instead for the cities. The "Extended Forecast" section would show data for the highlighted/selected city shown the default table view. Ideally a 'favorites' style component would be added to allow users to sort the city list order.
+
 ## Try It Out ##
 
 Clone the repository

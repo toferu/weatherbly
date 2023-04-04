@@ -2,13 +2,15 @@ import {useEffect, useState} from 'react'
 import {ReturnObject, ForecastType} from '../api/types'
 import axios from 'axios'
 
+type CachedCityData = Map<string, ForecastType>
+
 const useWeather = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
-  const [query, setQuery] = useState<[]>([])
+  const [query, setQuery] = useState<ReturnObject[]>([])
   const [selectedCity, setSelectedCity] = useState<ReturnObject | null>()
   const [cityData, setCityData] = useState<ForecastType | null>() 
 
-  const localStorageSaveData = (key: string, value: any) => {
+  const localStorageSaveData = (key: string, value: unknown) => {
     localStorage.setItem(key, JSON.stringify(value))
   }
 
@@ -31,7 +33,7 @@ const useWeather = () => {
    }
 
   const getForecast = (selectedCity: ReturnObject) => {
-    const localStorageKey = `weatherData-${selectedCity.lat}-${selectedCity.lon}`
+    const localStorageKey = `weatherData-${selectedCity.name}-${selectedCity.lat}-${selectedCity.lon}`
     const cachedData = getLocalData(localStorageKey)
 
     if (cachedData) {
@@ -71,27 +73,59 @@ const useWeather = () => {
     }
    }
 
-   useEffect(() => {
-    const localKeys = Object.keys(localStorage).filter((key) => key.startsWith('weatherData-'
-    ))
-    const cachedData = localKeys.map((key) =>
-    JSON.parse(localStorage.getItem(key))
-    )
+//    useEffect(() => {
+//     const localKeys = Object.keys(localStorage).filter((key: string) => key.startsWith('weatherData-'
+//     ))
+//     const cachedData = localKeys.map((key: string) =>
+//     getLocalData(key)
+//     )
 
+//     if (cachedData.length > 0) {
+//         setCityData(cachedData[0])
+//     } else {
+//         setCityData(null)
+//     }
+
+//     const cachedCityData: CachedCityData = {}
+//     cachedData.forEach((data: ReturnObject | null) => {
+//         if(data !== null){
+//         cachedCityData[data.name] = data
+//         }
+//     })
+
+//     localStorage.setItem('cachedCityData', JSON.stringify(cachedCityData))
+
+//    }, [])
+
+useEffect(() => {
+    const localKeys = Object.keys(localStorage).filter((key: string) => key.startsWith('weatherData-'))
+    const cachedData = localKeys.map((key: string) => getLocalData(key))
+  
     if (cachedData.length > 0) {
-        setCityData(cachedData[0])
+      const cityDataCache: {[key: string]: ForecastType} = {}
+      cachedData.forEach((data: ForecastType | null) => {
+        if (data !== null) {
+          cityDataCache[data.name] = data
+        }
+      })
+      setCityData(cityDataCache[selectedCity?.name || Object.keys(cityDataCache)[0]])
     } else {
-        setCityData(null)
+      setCityData(null)
     }
-
-    const cachedCityData = {}
-    cachedData.forEach((data) => {
-        cachedCityData[data.city.id] = data
+  
+    const cachedCityData: CachedCityData = new Map()
+    cachedData.forEach((data: ForecastType | null) => {
+      if (data !== null) {
+        const key: string = `${data.name}-${data.country}`
+        cachedCityData.set(key,data)
+      }
     })
+  
+    localStorage.setItem('cachedCityData', JSON.stringify([...cachedCityData]))
+  
+  }, [selectedCity])
+  
 
-    localStorage.setItem('cachedCityData', JSON.stringify(cachedCityData))
-
-   }, [])
 //    useEffect(() => {
 //     if(selectedCity) {
 //         setSearchTerm(selectedCity.name)

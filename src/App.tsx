@@ -1,5 +1,6 @@
 import Search from './components/Search'
 import Forecast from './components/Forecast'
+import { ReturnObject } from './api/types'
 import useWeather from './hooks/useWeather'
 import './App.css'
 
@@ -10,17 +11,14 @@ const App = (): JSX.Element => {
 return (
   <main className="App">
     <div className='header'>Weatherbly</div>
-    {cityData ? (
-    <Forecast data={cityData} />
-    ):(
     < Search
         searchTerm={searchTerm}
-        query={query}
+        query={query as ReturnObject[]}
         handleChange={handleChange}
         querySelection={querySelection}
         onSubmit={onSubmit} 
         />
-    )}
+    {cityData && <Forecast data={cityData} /> }
 
   </main>
   )

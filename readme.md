@@ -1,7 +1,7 @@
 
 # Weatherbly
 
-This is my last *minute* attempt at developing a simple weather app using the openweathermap.org API.
+This is my attempt at developing a simple weather app using the openweathermap.org API.
 I decided to build my react app with Vite as I've only ever used CRA. I began by focusing on developing the search functionality for the cities that were to be used for temperature comparison. Aside from some research I did on how to store state in the client's cache I did this section while really only checking the API docs. 
 
 ## Wireframe ##
